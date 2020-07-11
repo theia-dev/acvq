@@ -2,7 +2,7 @@ from ij import IJ, ImagePlus, ImageStack
 from ij.io import Opener
 from ij.io import FileSaver
 from loci.plugins import BF
-from loci.plugins. in import ImporterOptions
+from loci.plugins.in import ImporterOptions
 from loci.formats import ImageReader
 from loci.formats import MetadataTools
 from ome.units import UNITS
@@ -22,7 +22,6 @@ mipChoices = ["yes: tiff", "yes: jpg"]
 overwriteList = []
 startTime = time.time()
 imageCount = 0
-ecnt_max = 500  # max number of tries
 voxel_info = str()
 
 gd = GenericDialog("Set ToTiff Options")
@@ -50,12 +49,11 @@ inDir = IJ.getDirectory("Choose Directory Containing Input Files")
 if inDir is None:
     exit('No input directory selected!')
 
-
 if outDirPref == outDirChoices[2]:
     outDir = inDir
 else:
     outDir = IJ.getDirectory("Choose Directory For Output")
-    if inDir is None:
+    if outDir is None:
         exit('No output directory selected!')
     if outDirPref == outDirChoices[1]:
         for dirpath, dirnames, filenames in os.walk(inDir):
@@ -74,6 +72,7 @@ logging.info('    Output dir: %s', outDir)
 logging.info('    Output format: %s', outDirPref)
 logging.info('    %s', overwritePref)
 logging.info('    Save channels in different subfolders: %s', channelSubfolderPref)
+
 
 def saveImage(imp, out_file):
     if overwritePref == overwriteChoices[0]:
@@ -105,42 +104,16 @@ def saveMip(img, file):
         FileSaver(img).saveAsJpeg(file + ".jpg")
 
 
-def waitFor(cmd, *args, **kwargs):
-    '''
-    Tries to open or save a file. If (network) storage is not reachable it will
-    try for a max number of times before
-    '''
-    ecnt = 0
-    if 'ecnt_max' in kwargs:
-        ecnt_max = kwargs['ecnt_max']
-    else:
-        ecnt_max = 10
-
-    while True:
-        try:
-            return cmd(*args)
-        except IOError as e:
-            ecnt += 1
-            logging.warning('%s', str(e))
-            logging.warning('%s could not be called %i times', cmd.__name__, ecnt)
-            if ecnt <= ecnt_max:
-                time.sleep(30)
-
-            else:
-                logging.error('Maximum number of tries reached.')
-                raise IOError("Maximum number of tries reached.")
-
-
 for root, dirs, files in os.walk(inDir):
     for file in files:
         if file.endswith(fileExt):
-            imageCount += 1
             logging.info('Starting image #%i (%s)', imageCount, str(file))
             options = ImporterOptions()
             options.setAutoscale(True)
             options.setId(os.path.join(root, file))
             options.setSplitChannels(True)
-            imps = waitFor(BF.openImagePlus, options, ecnt_max=ecnt_max)
+            imps = BF.openImagePlus(options)
+            imageCount += 1
             for imp in imps:
                 reader = ImageReader()
                 omeMeta = MetadataTools.createOMEXMLMetadata()
@@ -167,41 +140,41 @@ for root, dirs, files in os.walk(inDir):
                                                  stackSizeX, stackSizeY, stackSizeZ)]) + '\n'
                 if outDirPref == outDirChoices[0] and channelSubfolderPref == "no":
                     out_file = os.path.join(outDir, out_name + ".tiff")
-                    waitFor(saveImage, imp, out_file, ecnt_max=ecnt_max)
+                    saveImage(imp, out_file)
                     if any([mipPrefJPG, mipPrefTIFF]):
                         mipOutFile = os.path.join(outDir, "MIP", out_name)
                         if not os.path.isdir(os.path.join(outDir, "MIP")):
                             os.mkdir(os.path.join(outDir, "MIP"))
                         outimp = maxZprojection(imp)
-                        waitFor(saveMip, outimp, mipOutFile, ecnt_max=ecnt_max)
+                        saveMip(outimp, mipOutFile)
 
                 elif outDirPref == outDirChoices[0] and channelSubfolderPref == "yes":
                     out_file = os.path.join(outDir, channel_name, out_name + ".tiff")
                     if not os.path.isdir(os.path.join(outDir, channel_name)):
                         os.mkdir(os.path.join(outDir, channel_name))
-                    waitFor(saveImage, imp, out_file, ecnt_max=ecnt_max)
+                    saveImage(imp, out_file)
                     if any([mipPrefJPG, mipPrefTIFF]):
                         mipOutFile = os.path.join(outDir, channel_name, "MIP", out_name)
                         if not os.path.isdir(os.path.join(outDir, channel_name, "MIP")):
                             os.mkdir(os.path.join(outDir, channel_name, "MIP"))
                         outimp = maxZprojection(imp)
-                        waitFor(saveMip, outimp, mipOutFile, ecnt_max=ecnt_max)
+                        saveMip(outimp, mipOutFile)
 
                 elif outDirPref == outDirChoices[1] and channelSubfolderPref == "no":
                     outSubDir = root.replace(inDir, outDir)
                     out_file = os.path.join(outSubDir, out_name + ".tiff")
-                    waitFor(saveImage, imp, out_file, ecnt_max=ecnt_max)
+                    saveImage(imp, out_file)
                     if any([mipPrefJPG, mipPrefTIFF]):
                         mipOutFile = out_file.replace(".tiff", "_mip")
                         outimp = maxZprojection(imp)
-                        waitFor(saveMip, outimp, mipOutFile, ecnt_max=ecnt_max)
+                        saveMip(outimp, mipOutFile)
 
                 elif outDirPref == outDirChoices[1] and channelSubfolderPref == "yes":
                     outSubDir = root.replace(inDir, outDir)
                     if not os.path.isdir(os.path.join(outSubDir, channel_name)):
                         os.mkdir(os.path.join(outSubDir, channel_name))
                     out_file = os.path.join(outSubDir, channel_name, out_name + ".tiff")
-                    waitFor(saveImage, imp, out_file, ecnt_max=ecnt_max)
+                    saveImage(imp, out_file)
                     if any([mipPrefJPG, mipPrefTIFF]):
                         mipOutFile = out_file.replace(".tiff", "_mip")
                         outimp = maxZprojection(imp)
@@ -209,34 +182,26 @@ for root, dirs, files in os.walk(inDir):
 
                 elif outDirPref == outDirChoices[2] and channelSubfolderPref == "no":
                     out_file = os.path.join(root, out_name + ".tiff")
-                    waitFor(saveImage, imp, out_file, ecnt_max=ecnt_max)
+                    saveImage(imp, out_file)
                     if any([mipPrefJPG, mipPrefTIFF]):
                         mipOutFile = out_file.replace(".tiff", "_mip")
                         outimp = maxZprojection(imp)
-                        waitFor(saveMip, outimp, mipOutFile, ecnt_max=ecnt_max)
+                        saveMip(outimp, mipOutFile)
 
                 elif outDirPref == outDirChoices[2] and channelSubfolderPref == "yes":
                     out_file = os.path.join(root, channel_name, out_name + ".tiff")
                     if not os.path.isdir(os.path.join(root, channel_name)):
                         os.mkdir(os.path.join(root, channel_name))
-                    waitFor(saveImage, imp, out_file, ecnt_max=ecnt_max)
+                    saveImage(imp, out_file)
                     if any([mipPrefJPG, mipPrefTIFF]):
                         mipOutFile = out_file.replace(".tiff", "_mip")
                         outimp = maxZprojection(imp)
-                        waitFor(saveMip, outimp, mipOutFile, ecnt_max=ecnt_max)
+                        saveMip(outimp, mipOutFile)
 
 with open(os.path.join(outDir, "VoxelSize.txt"), 'w') as output:
     output.write(voxel_info)
-IJ.log("\\Clear")
-IJ.log("Finished")
-
 
 duration = time.time()- startTime
-if overwriteList:
-    with open(os.path.join(outDir, "Existing-Files.txt"), 'w') as f:
-        for item in overwriteList:
-            f.write("%s\n" % item)
-
 logging.info('Processing finished')
 
 duration_h, rest = divmod(duration, 3600)
@@ -253,3 +218,6 @@ if overwriteList:
     logging.info('Existing Files:')
     for item in overwriteList:
         logging.info('    %s', item)
+
+IJ.log("\\Clear")
+IJ.log("Finished")

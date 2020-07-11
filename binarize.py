@@ -1,9 +1,8 @@
-from loci.common import Region
 from ij import IJ, ImagePlus, ImageStack
 from ij.io import Opener
 from ij.io import FileSaver
 from loci.plugins import BF
-from loci.plugins. in import ImporterOptions
+from loci.plugins.in import ImporterOptions
 from loci.formats import ImageReader
 from loci.formats import MetadataTools
 from ome.units import UNITS
@@ -17,17 +16,16 @@ import logging
 
 outDirChoices = ["New Directory, no subfolders", "New Directory, keep input subfolders",
                  "Within (subfolders of) input directory"]
-thresholdChoices = ["Otsu, white objects, stack, Threshold each slice",
-                    "Otsu, white objects, stack, Threshold stack histogram",
+thresholdChoices = ["Otsu, white objects, stack, histogram of each slice",
+                    "Otsu, white objects, stack, stack histogram",
                     "Otsu, white objects, try both methods"]
 overwriteChoices = ["NO overwrite existing files", "Overwrite existing files"]
 mipChoices = ["yes: tiff", "yes: jpg"]
 overwriteList = []
 startTime = time.time()
 imageCount = 0
-ecnt_max = 500  # max number of tries
 
-gd = GenericDialog("Set Binarizaion.py Options")
+gd = GenericDialog("Set binarization.py Options")
 gd.addStringField("String to identify your input images", "_deconv")
 gd.addRadioButtonGroup("Output", outDirChoices, 3, 1, outDirChoices[0])
 gd.addRadioButtonGroup("Threshold Settings", thresholdChoices, 3, 1, thresholdChoices[0])
@@ -43,6 +41,7 @@ thresholdPref = gd.getNextRadioButton()
 overwritePref = gd.getNextRadioButton()
 mipPrefTIFF = gd.getNextBoolean()
 mipPrefJPG = gd.getNextBoolean()
+IJ.redirectErrorMessages(True)
 
 inDir = IJ.getDirectory("Choose Directory Containing Input Files")
 if inDir is None:
@@ -64,7 +63,7 @@ else:
 logging.basicConfig(filename=os.path.join(outDir, "Log.txt"), filemode='w', level=logging.DEBUG,
                     format='%(asctime)s | %(levelname)s >> %(message)s', datefmt='%Y/%m/%d %H:%M:%S')
 
-logging.info('Start ToTiff script')
+logging.info('Start binarization script')
 logging.info('Preferences')
 logging.info('    Input dir: %s', inDir)
 logging.info('    Output dir: %s', outDir)
@@ -77,6 +76,7 @@ logging.info('    Threshold Option %s', thresholdPref)
 def checkDirs(dir_path):
     if not os.path.isdir(dir_path):
         os.makedirs(dir_path)
+
 
 def saveImage(imp, out_file):
     if overwritePref == overwriteChoices[0]:
@@ -142,32 +142,6 @@ def setThreshold(img, outDir, out_name, thresholdPref):
         saveImage(img, out_file)
 
 
-def waitFor(cmd, *args, **kwargs):
-    '''
-    Tries to open or save a file. If (network) storage is not reachable it will
-    try for a max number of times before
-    '''
-    ecnt = 0
-    if 'ecnt_max' in kwargs:
-        ecnt_max = kwargs['ecnt_max']
-    else:
-        ecnt_max = 10
-
-    while True:
-        try:
-            return cmd(*args)
-        except IOError as e:
-            ecnt += 1
-            logging.warning('%s', str(e))
-            logging.warning('%s could not be called %i times', cmd.__name__, ecnt)
-            if ecnt <= ecnt_max:
-                time.sleep(30)
-
-            else:
-                logging.error('Maximum number of tries reached.')
-                raise IOError("Maximum number of tries reached.")
-
-
 for root, dirs, files in os.walk(inDir):
     for file in files:
         find = re.findall(fileID, file)
@@ -177,13 +151,13 @@ for root, dirs, files in os.walk(inDir):
                 out_file = os.path.join(outDir, out_name)
                 imp = IJ.openImage(os.path.join(root, file))
                 imageCount += 1
-                waitFor(setThreshold, imp, outDir, out_name, thresholdPref, ecnt_max=ecnt_max)
+                setThreshold(imp, outDir, out_name, thresholdPref)
                 if any([mipPrefJPG, mipPrefTIFF]):
                     if thresholdPref != thresholdChoices[2]:
                         mipOutFile = os.path.join(outDir, "MIP", out_name.replace(".tiff", ""))
                         checkDirs(os.path.join(outDir, "MIP"))
                         outimp = maxZprojection(imp)
-                        waitFor(saveMip, outimp, mipOutFile)
+                        saveMip(outimp, mipOutFile)
                     else:
                         imp2 = imp.duplicate()
                         thresholdPref = thresholdChoices[0]
@@ -191,13 +165,13 @@ for root, dirs, files in os.walk(inDir):
                         mipOutFile = os.path.join(outDir, f, "MIP", out_name.replace(".tiff", ""))
                         outimp = maxZprojection(imp)
                         checkDirs(os.path.join(outDir, f, "MIP"))
-                        waitFor(saveMip, outimp, mipOutFile)
+                        saveMip(outimp, mipOutFile)
                         thresholdPref = thresholdChoices[1]
                         m, f = getThresholdOptions(thresholdPref)
                         mipOutFile = os.path.join(outDir, f, "MIP", out_name.replace(".tiff", ""))
                         checkDirs(os.path.join(outDir, f, "MIP"))
                         outimp2 = maxZprojection(imp2)
-                        waitFor(saveMip, outimp2, mipOutFile)
+                        saveMip(outimp2, mipOutFile)
 
 
 duration = time.time() - startTime
@@ -214,6 +188,11 @@ elif duration_min > 0:
     logging.info('%i files procced in %i min and %i s', imageCount, duration_min, duration_s)
 else:
     logging.info('%i files procced in %i s', imageCount, duration_s)
+
+if overwriteList:
+    logging.info('Existing Files:')
+    for item in overwriteList:
+        logging.info('    %s', item)
 
 IJ.log("\\Clear")
 IJ.log("Finished")
