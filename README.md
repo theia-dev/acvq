@@ -36,7 +36,7 @@ Additionally, a txt file with the voxel sizes for each output image is created.
 This voxel size file is used subsequently in the Tcl scripts for Amira.
 The script can be opened from within ImageJ: *Plugins->Macros->Run* or using the command line.
 
-![](docs/screenshots/ToTiff.jpg?raw=True)
+![](docs/screenshots/ToTiff.png?raw=True)
 
 First, set the extension of the image files from the microscopy software, e.g. 'nd2'.
 The output can be in a new folder without subfolders (*recommended for the protocol*) or the input directory tree can be recreated in the output folder.
@@ -55,8 +55,8 @@ This script binarizes the input image using the AutoThreshold module in Fiji wit
 ![](docs/screenshots/binarization.png?raw=True)
 
 The script processes tif(f) input files.
-If there are tiff files which are not of interest for the binarize, a string can be provided to identify the relevant images.
-If the string is empty all tif(f) files will be processed.  
+If there are tiff files which are not of interest for the binarization step, a string can be provided to identify the relevant images.
+If the string is empty, all tiff files will be processed.  
 The output settings are similar to the [ToTiff.py](#ToTiff.py) script.  
 There is a choice of whether the histogram of each slice is computed or if the histogram of the complete stack is computed (see also Troubleshooting Step 1 in the protocol).
 Moreover, both methods can be applied and the output can be compared manually.  
