@@ -135,6 +135,7 @@ def setThreshold(img, outDir, out_name, thresholdPref):
         out_file = os.path.join(outDir, f, out_name)
         checkDirs(os.path.join(outDir, f))
         saveImage(img2, out_file)
+        thresholdPref = thresholdChoices[2]
     else:
         m, f = getThresholdOptions(thresholdPref)
         IJ.run(img, "Auto Threshold", "method=" + m)
@@ -172,6 +173,7 @@ for root, dirs, files in os.walk(inDir):
                         checkDirs(os.path.join(outDir, f, "MIP"))
                         outimp2 = maxZprojection(imp2)
                         saveMip(outimp2, mipOutFile)
+                        thresholdPref = thresholdChoices[2]
 
 
 duration = time.time() - startTime
