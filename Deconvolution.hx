@@ -50,10 +50,9 @@ if { [file exists $outfile] == 0} {
 remove -all
 set hideNewModules 0
 set input [ load -tif +mode 100 +box 0 [expr ($x_dim-1)*$x_voxel] 0 [expr ($y_dim-1)*$y_voxel] 0 [expr ($z_dim-1)*$z_voxel] $entry ]
-set input [$input setLabel "input"]
 
 set cd [create HxCorrectZDrop]
-$cd data connect "input"
+$cd data connect $input
 $cd fire
 $cd mode setValue 0
 $cd fire
