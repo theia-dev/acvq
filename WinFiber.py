@@ -117,7 +117,7 @@ def WinFiberRemoveLoops(output_name):
 def checkDir(direct):
     try:
         if not os.path.isdir(direct):
-            os.makedirs(direct)
+            os.makedir(direct)
     except PermissionError:
         time.sleep(120)
         pass
@@ -179,20 +179,28 @@ for root, dirs, files in os.walk(input_path):
                 base_name = file.split("_skeletonize")[0]
             except IndexError:
                 base_name = input_file
-            len_no = int(root.split("len_")[1])
-
-            export_dir_out = os.path.join(base_dir_output, "len_" + str(len_no))
-            checkDir(export_dir_out)
-            screenshot_dir_out = os.path.join(export_dir_out, "len_" + str(len_no), "screenshots")
+            try:
+                len_no = int(root.split("len_")[1])
+            except IndexError:
+                len_no = None
+            export_dir_out = output_path
+            screenshot_dir_out = os.path.join(export_dir_out, "screenshots")
             checkDir(screenshot_dir_out)
             loopremoval_dir_out = os.path.join(screenshot_dir_out, "loop-removal")
             checkDir(loopremoval_dir_out)
 
-            screenshot_file_xy = base_name + "-len_" + str(len_no) + "_XY.png"
-            screenshot_file_z = base_name + "-len_" + str(len_no) + "_Z.png"
-            screenshot_file_loop = base_name + "-len_" + str(len_no) + "_looprem.png"
-            export_file_wloops = base_name + "-len_" + str(len_no) + ".xls"
-            export_file_loops_removed = base_name + "-len_" + str(len_no) + "_loops_removed.xls"
+            if len:
+                screenshot_file_xy = base_name + "-len_" + str(len_no) + "_XY.png"
+                screenshot_file_z = base_name + "-len_" + str(len_no) + "_Z.png"
+                screenshot_file_loop = base_name + "-len_" + str(len_no) + "_looprem.png"
+                export_file_wloops = base_name + "-len_" + str(len_no) + ".xls"
+                export_file_loops_removed = base_name + "-len_" + str(len_no) + "_loops_removed.xls"
+            else:
+                screenshot_file_xy = base_name + "-len_" + str(len_no) + "_XY.png"
+                screenshot_file_z = base_name + "-len_" + str(len_no) + "_Z.png"
+                screenshot_file_loop = base_name + "-len_" + str(len_no) + "_looprem.png"
+                export_file_wloops = base_name + "-len_" + str(len_no) + ".xls"
+                export_file_loops_removed = base_name + "-len_" + str(len_no) + "_loops_removed.xls"
             if not os.path.exists(os.path.join(export_dir_out, export_file_loops_removed)):
                 if input_file not in problem_list:
                     try:

@@ -1,9 +1,10 @@
 from jinja2 import Template
 import os
 from pathlib import Path
-from sys import argv
+import sys
 import subprocess
 import re
+import tempfile
 
 tm_deconv = Template('''
 set voxel_dir [file normalize { {{ voxel_dir }} }]
@@ -52,7 +53,7 @@ set y_dim {{ y_dim }}
 set z_dim {{ z_dim }}
 
 set BinInDir [file normalize { {{ BinInDir }} } ]
-set MV3DOutDir [file normalize {{{ MV3DOutDir }}}]
+set MV3DOutDir [file normalize { {{ MV3DOutDir }} }]
 set BinInID {{ BinInID }}
 set MV3DOutID {{ MV3DOutID }}
 set chamferInterpret {{ chamferInterpret }}
@@ -105,6 +106,7 @@ def deconv_config(template):
     if voxel_dir:
         x_voxel = y_voxel = z_voxel = x_dim = y_dim = z_dim = 'na'
         voxel_dir = input('Please provide the path to the file with the voxel sizes. ')
+        voxel_dir = voxel_dir.replace('"', '')
         while not voxel_dir.endswith(".txt"):
             voxel_dir = input('The filename must end in ".txt". ')
         while not os.path.isfile(voxel_dir):
@@ -124,9 +126,11 @@ def deconv_config(template):
         z_dim = input('Please provide the z size of your image in steps. ')
         check_float(z_dim)
     tiffInDir = input('Please provide the path to the folder with the tiff files for deconvolution. ')
+    tiffInDir = tiffInDir.replace('"', '')
     while not os.path.exists(tiffInDir):
         tiffInDir = input('This path might not exist. Please double check your input. ')
     deconOutDir = input('Please provide the path to the folder where the deconvoluted files will be saved. ')
+    deconOutDir = deconOutDir.replace('"', '')
     if not os.path.exists(deconOutDir):
         while True:
             makedir = ask_choice('This path does not exist. Should it be created?', [
@@ -182,7 +186,7 @@ def deconv_config(template):
     ])
     dec_na = input('Deconvolution. Please provide the numerical apperture of the objective. ')
     check_float(dec_na)
-    dec_lambda = input('Deconvolution. Please provide the emission wavelength in µm.')
+    dec_lambda = input('Deconvolution. Please provide the emission wavelength in µm. ')
     check_float(dec_lambda)
     while float(dec_lambda) > 1:
         dec_lambda = input('Please use µm. The value should be < 1.')
@@ -303,47 +307,55 @@ elif config_choice == 1:
     conf_name = "skeleton_config.tcl"
 
 conf_dir = input("Please provide the directory to store config file. ")
+conf_dir = conf_dir.replace('"', '')
 if not conf_dir.endswith(".tcl"):
     conf_dir = os.path.join(conf_dir, "deconv_config.tcl")
 else:
     conf_dir = Path(conf_dir)
 
-with open(conf_dir, 'w') as out:
+with open(str(conf_dir), 'w') as out:
     out.write(conf)
 
-if sys.argv[1] != '-r' | sys.argv[1] != '--run':
+if sys.argv[1] == '-r' or sys.argv[1] == '--run':
     py_path = Path(sys.executable)
     while True:
+        print("Searching for Amira executable...")
         if not [i for i in py_path.parent.rglob("Amira.exe")]:
             py_path = py_path.parent
         else:
             amira_exe = [i for i in py_path.parent.rglob("Amira.exe")][0]
             break
-        if not os.access(str(amira_exe), os.X_OK):
-            amira_exe = input("Please provide the path to the Amira executable file. ")
-            amira_exe = Path(amira_exe)
-    deconv_path = "Deconvolution.hx"
-    if not os.path.exists(deconv_path):
-        deconv_path = input("Please provide the path to Deconvolution.hx. ")
-        deconv_path = Path(deconv_path)
+    if not amira_exe or not os.access(str(amira_exe), os.X_OK):
+        amira_exe = input("Please provide the path to the Amira executable file. ")
+        amira_exe = amira_exe.replace('"', '')
+        amira_exe = Path(amira_exe)
+    if config_choice == 0:
+        hx_name = "Deconvolution.hx"
+        hx_path = "Deconvolution.hx"
+    elif config_choice == 1:
+        hx_path = "Skeletonization.hx"
+        hx_name = "Skeletonization.hx"
+    if not os.path.exists(hx_path):
+        hx_path = input("Please provide the path to {}. ".format(hx_path))
+        hx_path = hx_path.replace('"', '')
 
-    if sys.argv[2] != '-s' | sys.argv[2] != '--save':
+    if sys.argv[2] == '-s' or sys.argv[2] == '--save':
         out_file = input("Please provide the path for saving the script file. ")
+        out_file = out_file.replace('"', '')
         if not out_file.endswith(".hx"):
-            out_file = oufile + "Deconvolution.hx"
-        out_file = Path(out_file)
+            out_file = os.path.join(out_file, hx_name)
     else:
         fd, path = tempfile.mkstemp()
-        out_file = path + "Deconvolution.hx"
-    with open (deconv_path, 'r') as d:
-        with open(out_file, 'w') as o:
+        out_file = out_file = os.path.join(out_file, hx_name)
+    with open(str(hx_path), 'r') as d:
+        with open(str(out_file), 'w') as o:
             lines = d.readlines()
             for l in lines:
                 l = re.sub("source \[file normalize \{.*\}\]",
                 "source [file normalize {" + str(conf_dir) + "}]", l)
                 o.write(l)
-    p = subprocess.run([amira_exe, "-no_gui", "-tclmd", "source", out_file], stdout=subprocess.PIPE)
+    p = subprocess.run([amira_exe, "-no_gui", "-tclmd", "source", str(out_file)], stdout=subprocess.PIPE)
     for line in p.stdout.split('\n'):
         print(line)
-elif sys.argv[1] != '-mk' | sys.argv[1] != '--make':
+elif sys.argv[1] == '-mk' or sys.argv[1] == '--make':
     pass

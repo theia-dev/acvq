@@ -124,14 +124,12 @@ def setThreshold(img, outDir, out_name, thresholdPref):
         thresholdPref = thresholdChoices[0]
         m, f = getThresholdOptions(thresholdPref)
         IJ.run(img, "Auto Threshold", "method=" + m)
-        out_name = out_name.replace("_binary.tiff", "_" + f + "_binary.tiff")
         out_file = os.path.join(outDir, f, out_name)
         checkDirs(os.path.join(outDir, f))
         saveImage(img, out_file)
         thresholdPref = thresholdChoices[1]
         m, f = getThresholdOptions(thresholdPref)
         IJ.run(img2, "Auto Threshold", "method=" + m)
-        out_name = out_name.replace("_binary.tiff", "_" + f + "_binary.tiff")
         out_file = os.path.join(outDir, f, out_name)
         checkDirs(os.path.join(outDir, f))
         saveImage(img2, out_file)
@@ -142,7 +140,7 @@ def setThreshold(img, outDir, out_name, thresholdPref):
         out_file = os.path.join(outDir, out_name)
         saveImage(img, out_file)
 
-
+# ToDo: check the naming of the output images
 for root, dirs, files in os.walk(inDir):
     for file in files:
         find = re.findall(fileID, file)

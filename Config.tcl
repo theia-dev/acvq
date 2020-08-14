@@ -2,7 +2,7 @@
 
 # Voxel Size options for both *.hx Scripts
   # either select the voxelsize file from the ToTiff.py scripts (leave the variables below as 'na')
-  set voxel_dir [file normalize {A:\rds\ExampleImages_Scripting\Vessel_Quant\tiff_fromsub\VoxelSize.txt}]
+  set voxel_dir [file normalize {U:\Research\Projects\ihbi\regenerativemedicine\rm_general\Users\Anna\02Analysis\10Vessel-Morphometry\10MorphometricAnalysis\Berlines_Experiments\z_0-181\01Tiff\VoxelSize.txt}]
   # or set the voxel sizes here manually. Set Voxel_dir None
   set x_voxel na
   set y_voxel na
@@ -13,9 +13,9 @@
 
 # Options for the Deconvolution.hx script
   # directory where the tiff files (converted from the raw format) are located
-set tiffInDir [file normalize {A:\rds\ExampleImages_Scripting\Vessel_Quant\tiff_fromsub\FITC}]
+set tiffInDir [file normalize {U:\Research\Projects\ihbi\regenerativemedicine\rm_general\Users\Anna\02Analysis\10Vessel-Morphometry\10MorphometricAnalysis\Berlines_Experiments\z_0-181\01Tiff\FITC}]
   # directory where the deconvoluted files should be saved
-set deconOutDir [file normalize {A:\rds\ExampleImages_Scripting\Vessel_Quant\dec}]
+set deconOutDir [file normalize {U:\Research\Projects\ihbi\regenerativemedicine\rm_general\Users\Anna\02Analysis\10Vessel-Morphometry\10MorphometricAnalysis\Berlines_Experiments\z_0-181\02Deconv}]
   # provide a string to identify the input images, can be empty
 set inID ""
   # provide a string for the output filename, can be empty ("")
