@@ -28,8 +28,8 @@ gd = GenericDialog("Set ToTiff Options")
 gd.addStringField("File extension to be processed", ".nd2")
 gd.addRadioButtonGroup("Output", outDirChoices, 3, 1, outDirChoices[0])
 gd.addRadioButtonGroup("Overwrite", overwriteChoices, 2, 1, overwriteChoices[0])
-gd.addRadioButtonGroup("Save channels in different subfolders", channelSubfolderChoices, 2, 1,
-                       channelSubfolderChoices[1])
+gd.addRadioButtonGroup("Save channels in different subfolders", channelSubfolderChoices, 1, 1,
+                       channelSubfolderChoices[0])
 gd.addCheckboxGroup(2, 1, mipChoices, [False, False], ["Do you want maximum intensity projections of your images?"])
 gd.showDialog()
 if gd.wasCanceled():
