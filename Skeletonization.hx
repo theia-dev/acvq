@@ -120,11 +120,11 @@ foreach entry $itemlist {
     $eval fire
 
     set new_dir  [concat $MV3DOutDir/len_$len/]
-    set outfile [concat $new_dir/$outname.mv3D]
+    set outfile [concat $new_dir/$outname.mv3d]
 
     $smooth_result exportData "MicroVisu3D" $outfile
-    if { [file exists $new_dir/$outname-SMT.hx] == 0} {
-      saveProjectAs -packAndGo -forceAutoSave $new_dir/$outname-SMT.hx
+    if { [file exists $new_dir/$outname-skeletonization.hx] == 0} {
+      saveProjectAs -packAndGo -forceAutoSave $new_dir/$outname-skeletonization.hx
   }
   }
 }
