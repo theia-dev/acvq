@@ -1,5 +1,8 @@
 source [file normalize {A:\rds\Batch-Processing-Scripts\3DQuantVascularStructures\Config.tcl}]
 #####################
+
+echo "Deconvolution started"
+
 set dim_list [list x_voxel y_voxel z_voxel x_dim y_dim z_dim]
 set dim_dict [dict create  x_voxel 0 y_voxel 1 z_voxel 2 x_dim 3 y_dim 4 z_dim 5]
 set itemlist [
