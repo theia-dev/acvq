@@ -57,11 +57,11 @@ with open(os.path.join(output_path, "WinFiber_data.csv"), 'w', newline='') as ou
                 data_dict.update(
                     {
                         "sample": file,
-                        "loops" : loops,
+                        "loops": loops,
                         "len_of_ends": len_of_ends
                     }
                 )
-                with open(os.path.join(root, file), 'r', encoding = "utf-8") as f:  # open the actual input file (xls)
+                with open(os.path.join(root, file), 'r', encoding="utf-8") as f:  # open the actual input file (xls)
                     average_diam = []
                     segment_count = []
                     content = f.read()
