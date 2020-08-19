@@ -97,11 +97,11 @@ def maxZprojection(stackimp):
     return zpimp
 
 
-def saveMip(img, file):
+def saveMip(img, file_path):
     if mipPrefTIFF:
-        FileSaver(img).saveAsTiff(file + ".tiff")
+        FileSaver(img).saveAsTiff(file_path + ".tiff")
     if mipPrefJPG:
-        FileSaver(img).saveAsJpeg(file + ".jpg")
+        FileSaver(img).saveAsJpeg(file_path + ".jpg")
 
 
 for root, dirs, files in os.walk(inDir):
