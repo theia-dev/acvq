@@ -101,7 +101,7 @@ The script needs and argument which is either `--make` (`-mk`) or `--run` (`-r`)
 The `--save` (`-s`) argument will save the altered \*.hx file which was used in Amira.
 Note,  Amira.exe is started with the `-no_gui` option.
 
-`mkconfig.py` can be run from a locally installed python or using the python which is shipped with Amira.
+`mkconfig.py` can be run from a locally installed python or using the `Python` installation which is shipped with Amira.
 It can usually be found in the Amira install folder /python/python.exe.
 
 ### Example configs
