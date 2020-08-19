@@ -9,12 +9,14 @@ try:
     input_path = Path(sys.argv[1])
 except IndexError:
     input_path = input('Please provide the path to the xlsx files which where exported from WinFiber3D. ')
+    input_path = input_path.replace('"', '')
     input_path = Path(input_path)
 
 try:
     output_path = Path(sys.argv[2])
 except IndexError:
     output_path = input('Please provide the path where the exported files will be saved. ')
+    output_path = input_path.replace('"', '')
     output_path = Path(output_path)
 
 data_dict = {}

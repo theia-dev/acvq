@@ -4,7 +4,7 @@ import subprocess
 import time
 import pyautogui
 from pathlib import Path
-from sys import argv
+import sys
 import logging
 
 pyautogui.PAUSE = 2
@@ -117,7 +117,7 @@ def WinFiberRemoveLoops(output_name):
 def checkDir(direct):
     try:
         if not os.path.isdir(direct):
-            os.makedir(direct)
+            os.mkdir(direct)
     except PermissionError:
         time.sleep(120)
         pass
@@ -135,18 +135,25 @@ try:
     winfiber_path = Path(sys.argv[1])
 except IndexError:
     winfiber_path = input('Please provide the path to the WinFiber3D executable. ')
+    winfiber_path = winfiber_path.replace('"', '')
     winfiber_path = Path(winfiber_path)
+    if not winfiber_path or not os.access(str(winfiber_path), os.X_OK):
+        winfiber_path = input('Please provide the path to the WinFiber3D executable. ')
+        winfiber_path = winfiber_path.replace('"', '')
+        winfiber_path = Path(winfiber_path)
 
 try:
     input_path = Path(sys.argv[2])
 except IndexError:
     input_path = input('Please provide the path to the mv3d files. ')
+    input_path = input_path.replace('"', '')
     input_path = Path(input_path)
 
 try:
     output_path = Path(sys.argv[3])
 except IndexError:
     output_path = input('Please provide the path where the exported files will be saved. ')
+    output_path = output_path.replace('"', '')
     output_path = Path(output_path)
 
 log_file = os.path.join(output_path, "Log.txt")
@@ -167,7 +174,7 @@ with open(log_file, 'r') as f:
         if n.startswith('    File not processed:'):
             problem_list.append(n.split(":")[1])
 
-p = open_program(winfiber_path)
+p = open_program(str(winfiber_path))
 time.sleep(10)
 pyautogui.hotkey('win', 'up')
 x = 0
@@ -229,7 +236,7 @@ for root, dirs, files in os.walk(input_path):
                             time.sleep(3)
                             p.kill()
                             time.sleep(20)
-                            p = open_program(winfiber_path)
+                            p = open_program(str(winfiber_path))
                             time.sleep(15)
                             pyautogui.hotkey('win', 'up')
                             x = 0
