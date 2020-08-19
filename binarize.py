@@ -121,19 +121,16 @@ def getThresholdOptions(thresholdPref):
 def setThreshold(img, outDir, out_name, thresholdPref):
     if thresholdPref == thresholdChoices[2]:
         img2 = img.duplicate()
-        thresholdPref = thresholdChoices[0]
-        m, f = getThresholdOptions(thresholdPref)
+        m, f = getThresholdOptions(thresholdChoices[0])
         IJ.run(img, "Auto Threshold", "method=" + m)
         out_file = os.path.join(outDir, f, out_name)
         checkDirs(os.path.join(outDir, f))
         saveImage(img, out_file)
-        thresholdPref = thresholdChoices[1]
-        m, f = getThresholdOptions(thresholdPref)
+        m, f = getThresholdOptions(thresholdChoices[1])
         IJ.run(img2, "Auto Threshold", "method=" + m)
         out_file = os.path.join(outDir, f, out_name)
         checkDirs(os.path.join(outDir, f))
         saveImage(img2, out_file)
-        thresholdPref = thresholdChoices[2]
     else:
         m, f = getThresholdOptions(thresholdPref)
         IJ.run(img, "Auto Threshold", "method=" + m)
