@@ -6,7 +6,7 @@ import subprocess
 import re
 import tempfile
 
-env = Environment(variable_start_string='@=', variable_end_string ='=@')
+env = Environment(variable_start_string='@=', variable_end_string='=@')
 
 tm_deconv = env.from_string('''
 set voxel_dir [file normalize {@= voxel_dir =@}]
@@ -74,7 +74,7 @@ def ask_choice(question, options):
         raw_input = None
         print('\n' + question)
         for n, option in enumerate(options):
-            print('\t{}: {}'.format(n+1, option[0]))
+            print('\t{}: {}'.format(n + 1, option[0]))
 
         try:
             raw_input = input('Your choice: ')
@@ -85,7 +85,7 @@ def ask_choice(question, options):
                 print('Please try again - {} is not a valid choice. '.format(raw_input))
         except ValueError:
             print('Please try again - {} is not a number. '.format(raw_input))
-    return options[value-1][1]
+    return options[value - 1][1]
 
 
 def check_float(var):
@@ -101,9 +101,9 @@ def check_float(var):
 
 def deconv_config(template):
     voxel_dir = ask_choice('Do you have a file with the voxel sizes?', [
-            ['yes', True],
-            ['no', False],
-        ])
+        ['yes', True],
+        ['no', False],
+    ])
 
     if voxel_dir:
         x_voxel = y_voxel = z_voxel = x_dim = y_dim = z_dim = 'na'
@@ -143,11 +143,14 @@ def deconv_config(template):
                 os.makedirs(deconOutDir)
                 break
             else:
-                deconOutDir = input('Please provide the path to the folder where the deconvoluted files will be saved. ')
-    inID =  input ("Please provide a string to identify the input images. Can be empty, then all images in a folder will be processed. ")
+                deconOutDir = input(
+                    'Please provide the path to the folder where the deconvoluted files will be saved. ')
+    inID = input(
+        "Please provide a string to identify the input images. Can be empty, then all images in a folder will be processed. ")
     if inID == '':
         inID = '""'
-    outID = input ('Please provide a string for the output filename. Can be empty, then the filenames will be the same as the input. ')
+    outID = input(
+        'Please provide a string for the output filename. Can be empty, then the filenames will be the same as the input. ')
     if outID == '':
         outID = '""'
 
@@ -198,7 +201,7 @@ def deconv_config(template):
         dec_lambda = input('Please use µm. The value should be < 1.')
     dec_n = input("Deconvolution. Please provide the refractive index. ")
     check_float(dec_n)
-    dec_mode =  ask_choice('Deconvolution. Please set the PSF mode. ', [
+    dec_mode = ask_choice('Deconvolution. Please set the PSF mode. ', [
         ['widefield', 0],
         ['confocal', 1],
     ])
@@ -207,27 +210,24 @@ def deconv_config(template):
         ['yes', 'y'],
     ])
 
-    conf = template.render(voxel_dir=voxel_dir,
-      x_voxel = x_voxel, y_voxel = y_voxel, z_voxel = z_voxel,
-      x_dim =  x_dim, y_dim = y_dim, z_dim = z_dim,
-      tiffInDir = tiffInDir, deconOutDir = deconOutDir,
-      inID = inID, outID = outID,
-      median_kernel = median_kernel,
-      gauss_sigma_x = gauss_sigma_x, gauss_sigma_y = gauss_sigma_y, gauss_sigma_z = gauss_sigma_z,
-      gauss_kernel_x = gauss_kernel_x, gauss_kernel_y = gauss_kernel_y, gauss_kernel_z = gauss_kernel_z,
-      dec_borderW_x = dec_borderW_x, dec_borderW_y = dec_borderW_y, dec_borderW_z = dec_borderW_z,
-      dec_iterations = dec_iterations, dec_initial =dec_initial, dec_overrelax = dec_overrelax,
-      dec_regular = dec_regular, dec_method = dec_method, dec_na = dec_na, dec_lambda =dec_lambda,
-      dec_n = dec_n, dec_mode = dec_mode, saveProj = saveProj
-    )
+    conf = template.render(voxel_dir=voxel_dir, x_voxel=x_voxel, y_voxel=y_voxel, z_voxel=z_voxel, x_dim=x_dim,
+                           y_dim=y_dim, z_dim=z_dim, tiffInDir=tiffInDir, deconOutDir=deconOutDir, inID=inID,
+                           outID=outID, median_kernel=median_kernel, gauss_sigma_x=gauss_sigma_x,
+                           gauss_sigma_y=gauss_sigma_y, gauss_sigma_z=gauss_sigma_z,
+                           gauss_kernel_x=gauss_kernel_x, gauss_kernel_y=gauss_kernel_y, gauss_kernel_z=gauss_kernel_z,
+                           dec_borderW_x=dec_borderW_x, dec_borderW_y=dec_borderW_y, dec_borderW_z=dec_borderW_z,
+                           dec_iterations=dec_iterations, dec_initial=dec_initial, dec_overrelax=dec_overrelax,
+                           dec_regular=dec_regular, dec_method=dec_method, dec_na=dec_na, dec_lambda=dec_lambda,
+                           dec_n=dec_n, dec_mode=dec_mode, saveProj=saveProj
+                           )
     return conf
 
 
 def skeleton_config(template):
     voxel_dir = ask_choice('Do you have a file with the voxel sizes?', [
-            ['yes', True],
-            ['no', False],
-        ])
+        ['yes', True],
+        ['no', False],
+    ])
 
     if voxel_dir:
         x_voxel = y_voxel = z_voxel = x_dim = y_dim = z_dim = 'na'
@@ -269,16 +269,18 @@ def skeleton_config(template):
                 break
             else:
                 MV3DOutDir = input('Please provide the path to the folder where the deconvoluted files will be saved. ')
-    BinInID =  input ("Please provide a string to identify the input images. Can be empty, then all images in a folder are processed. ")
+    BinInID = input(
+        "Please provide a string to identify the input images. Can be empty, then all images in a folder are processed. ")
     if BinInID == '':
         BinInID = '""'
-    MV3DOutID = input ('Please provide a string for the output filename. Can be empty, then the filenames will be the same as the input. ')
+    MV3DOutID = input(
+        'Please provide a string for the output filename. Can be empty, then the filenames will be the same as the input. ')
     if MV3DOutID == '':
         MV3DOutID = '""'
     chamferInterpret = ask_choice('Please set chamfer interpretation', [
-            ['3D', 0],
-            ['XY planes', 1],
-        ])
+        ['3D', 0],
+        ['XY planes', 1],
+    ])
     smooth_coeff = input('Smooth Lines. Set the value for the coefficient. ')
     check_float(smooth_coeff)
     smooth_adhere = input('Smooth Lines. Set the value for adhere to original data. ')
@@ -295,15 +297,12 @@ def skeleton_config(template):
         ['yes', 'y'],
     ])
 
-    conf = template.render(voxel_dir=voxel_dir,
-      x_voxel = x_voxel, y_voxel = y_voxel, z_voxel = z_voxel,
-      x_dim =  x_dim, y_dim = y_dim, z_dim = z_dim,
-      BinInDir = BinInDir, MV3DOutDir = MV3DOutDir,
-      BinInID = BinInID, MV3DOutID = MV3DOutID,
-      chamferInterpret = chamferInterpret,
-      smooth_coeff = smooth_coeff, smooth_adhere = smooth_adhere, smooth_iter = smooth_iter,
-      len_list = len_list, islandsize = islandsize, saveProj = saveProj
-    )
+    conf = template.render(voxel_dir=voxel_dir, x_voxel=x_voxel, y_voxel=y_voxel, z_voxel=z_voxel,
+                           x_dim=x_dim, y_dim=y_dim, z_dim=z_dim, BinInDir=BinInDir, MV3DOutDir=MV3DOutDir,
+                           BinInID=BinInID, MV3DOutID=MV3DOutID, chamferInterpret=chamferInterpret,
+                           smooth_coeff=smooth_coeff, smooth_adhere=smooth_adhere, smooth_iter=smooth_iter,
+                           len_list=len_list, islandsize=islandsize, saveProj=saveProj
+                           )
     return conf
 
 
@@ -311,9 +310,9 @@ if len(sys.argv) < 2:
     sys.exit("Please provide at least one argument.")
 
 config_choice = ask_choice('Which Amira script would you create a config file for? ', [
-        ['Deconvolution', 0],
-        ['Skeletonization', 1],
-        ])
+    ['Deconvolution', 0],
+    ['Skeletonization', 1],
+])
 
 if config_choice == 0:
     conf = deconv_config(tm_deconv)
@@ -321,6 +320,8 @@ if config_choice == 0:
 elif config_choice == 1:
     conf = skeleton_config(tm_skeleton)
     conf_name = "skeleton_config.tcl"
+else:
+    conf = None
 
 conf_dir = input("Please provide the directory to store config file. ")
 conf_dir = conf_dir.replace('"', '')
@@ -366,18 +367,18 @@ if sys.argv[1] == '-r' or sys.argv[1] == '--run':
             out_file = os.path.join(out_file, hx_name)
     else:
         fd, path = tempfile.mkstemp()
-        out_file = out_file = os.path.join(path, hx_name)
+        out_file = os.path.join(path, hx_name)
     with open(str(hx_path), 'r') as d:
         with open(str(out_file), 'w') as o:
             conf_dir = conf_dir.replace('\\', '/')
             lines = d.readlines()
             for l in lines:
-                l = re.sub("source \[file normalize \{.*\}\]",
-                "source [file normalize {" + str(conf_dir) + "}]", l)
+                l = re.sub(r"source \[file normalize \{.*\}\]",
+                           r"source [file normalize {" + str(conf_dir) + "}]", l)
                 o.write(l)
 
     p = subprocess.Popen([str(amira_exe), "-no_gui", "-tclcmd", "source", str(out_file)],
-    stdout=subprocess.PIPE, universal_newlines=True)
+                         stdout=subprocess.PIPE, universal_newlines=True)
 
     for stdout_line in iter(p.stdout.readline, ""):
         print(stdout_line)
