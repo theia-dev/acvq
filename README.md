@@ -37,7 +37,7 @@ Please refer to the [Python website](https://www.python.org/about/gettingstarted
   * Overwrite: user's choice
   * Threshold: each slice or stack histogram, depending on the image. In doubt, try both. See also Troubleshooting.
   * Maximum intensity projections: yes (tiff or jpg)
-1. Skeletonize and save \*.mv3D files with `Skeletonization.hx`
+1. Skeletonize and save `*.mv3d` files with `Skeletonization.hx`
     * either use `mkconfig.py` to create the config file and run Amira
     * or create the config file manually
 1. WinFiber.py
@@ -57,11 +57,11 @@ This script uses the [Bioformats](https://www.openmicroscopy.org/bio-formats/) p
 If the input image contains several channels, they will be split into several files and the channel name will be added to the filename.
 Eventually, the images will be saved as tiff files.
 Additionally, a txt file with the voxel sizes for each output image is created.
-This voxel size file is used subsequently in the \*.hx scripts for Amira.
+This voxel size file is used subsequently in the `*.hx` scripts for Amira.
 
 ![](docs/screenshots/ToTiff.png?raw=True)
 
-First, set the extension of the image files from the microscopy software, e.g. 'nd2'.
+First, set the extension of the image files from the microscopy software, e.g. `nd2`.
 The output can be in a new folder without subfolders (*recommended for the protocol*) or the input directory tree can be recreated in the output folder.
 Be aware, that if the filenames between subfolders are equal, the images will get overwritten or not processed, depending on the next option. **Best practice is to use unique filenames!**
 Alternatively, the tiff files can be written within the subfolders of the input directory.  
@@ -93,21 +93,21 @@ There are two ways to create the configuration file.
 
 ### mkconfig.py
 
-mkconfig.py uses the user input to write the config file.
+`mkconfig.py` uses the user input to write the config file.
 Each parameters which needs to be set, will be queried.
 The script needs and argument which is either `--make` (`-mk`) or `--run` (`-r`).
-* `--make` will only create and save the config file. The user will need to provide this file to the \*.hx script manually
-* `--run` will create and save the config file but also provide it to the \*.hx file. It will then attempt to open Amira and run the \*.hx script.
-The `--save` (`-s`) argument will save the altered \*.hx file which was used in Amira.
-Note,  Amira.exe is started with the `-no_gui` option.
+* `--make` will only create and save the config file. The user will need to provide this file to the `*.hx` script manually
+* `--run` will create and save the config file but also provide it to the \*.hx file. It will then attempt to open Amira and run the `*.hx` script.
+The `--save` (`-s`) argument will save the altered `*.hx` file which was used in Amira.
+Note, Amira.exe is started with the `-no_gui` option.
 
 `mkconfig.py` can be run from a locally installed python or using the `Python` installation which is shipped with Amira.
-It can usually be found in the Amira install folder /python/python.exe.
+It can usually be found in the Amira install folder `/python/python.exe`.
 
 ### Example configs
-Alternatively, the example configs (example_config_deconvolution.tcl and example_config_skeletonization.tcl) can be adapted accordingly.
+Alternatively, the example configs (`example_config_deconvolution.tcl` and `example_config_skeletonization.tcl`) can be adapted accordingly.
 Refer to the comments in the example files for details.
-The path to the adapted config files might need to be adapted in the \*.hx files.
+The path to the adapted config files might need to be adapted in the `*.hx` files.
 
 ## Winfiber3D
 
@@ -116,16 +116,16 @@ Some experience with python might be helpful.
 
 ### WinFiber.py
 
-WinFiber.py relies heavily on the [pyautogui](https://pyautogui.readthedocs.io/en/latest/) package which controls mouse and keyboard movements.
+`WinFiber.py` relies heavily on the [pyautogui](https://pyautogui.readthedocs.io/en/latest/) package which controls mouse and keyboard movements.
 Although, it was aimed for as little mouse movements as possible, some were inevitable.
 Hence, the pyautogui parameters need to be adapted for the screen resolution and screen size.
-The WinFiber data is exported to a \*.xls file, one file per input image.
+The WinFiber data is exported to a `*.xls` file, one file per input image.
 Moreover, screenshots of the WinFiber window will be saved.
 For further information on the output of WinFiber3D, refer to the WinFiber3D manual.
 
 ### WinFiberGatherOutput.py
 
-This script gathers the information of various \*.xls files into one csv file.
+This script gathers the information of various `*.xls` files into one csv file.
 
 Th following information is collected from the Winfiber3D export:
 
