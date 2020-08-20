@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 import logging
 
-pyautogui.PAUSE = 2
+pyautogui.PAUSE = 1
 pyautogui.FAILSAFE = True
 
 
@@ -114,13 +114,27 @@ def WinFiberRemoveLoops(output_name):
     pyautogui.press('enter')
 
 
-def checkDir(direct):
+def checkDir(dir):
     try:
-        if not os.path.isdir(direct):
-            os.mkdir(direct)
+        if not os.path.isdir(dir):
+            os.mkdir(dir)
     except PermissionError:
         time.sleep(120)
         pass
+
+
+def ask_dir(dir, str):
+    if not os.path.isdir(dir):
+        while True:
+            makedir = ask_choice('This path does not exist. Would you like to create it?', [
+                ['yes', True],
+                ['no', False],
+            ])
+            if makedir:
+                os.makedirs(dir)
+                break
+            else:
+                dir = input(str)
 
 
 def open_program(path_name):
@@ -148,6 +162,7 @@ except IndexError:
     input_path = input('Please provide the path to the mv3d files. ')
     input_path = input_path.replace('"', '')
     input_path = Path(input_path)
+ask_dir(input_path, 'Please provide the path to the mv3d files. ')
 
 try:
     output_path = Path(sys.argv[3])
@@ -155,9 +170,10 @@ except IndexError:
     output_path = input('Please provide the path where the exported files will be saved. ')
     output_path = output_path.replace('"', '')
     output_path = Path(output_path)
+ask_dir(output_path, 'Please provide the path where the exported files will be saved. ')
 
 log_file = os.path.join(output_path, "Log.txt")
-logging.basicConfig(filename=log_file, filemode='w', level=logging.DEBUG,
+logging.basicConfig(filename=log_file, filemode='a', level=logging.DEBUG,
                     format='%(asctime)s | %(levelname)s >> %(message)s', datefmt='%Y/%m/%d %H:%M:%S')
 
 logging.info('Start binarization script')
@@ -171,16 +187,18 @@ problem_list = []
 with open(log_file, 'r') as f:
     temp = [line.strip() for line in f.readlines()]
     for n in temp:
-        if n.startswith('    File not processed:'):
-            problem_list.append(n.split(":")[1])
+        if 'File not processed' in n:
+            problem_list.append(n.split(": ")[1])
 
+time.sleep(5)
+print("Starting...")
 p = open_program(str(winfiber_path))
 time.sleep(10)
 pyautogui.hotkey('win', 'up')
 x = 0
 for root, dirs, files in os.walk(input_path):
     for file in files:
-        if file.endswith(".mv3d"):
+        if file.lower().endswith(".mv3d"):
             input_file = os.path.join(root, file)
             try:
                 base_name = file.split("_skeletonize")[0]
@@ -196,18 +214,18 @@ for root, dirs, files in os.walk(input_path):
             loopremoval_dir_out = os.path.join(screenshot_dir_out, "loop-removal")
             checkDir(loopremoval_dir_out)
 
-            if len:
+            if len_no:
                 screenshot_file_xy = base_name + "-len_" + str(len_no) + "_XY.png"
                 screenshot_file_z = base_name + "-len_" + str(len_no) + "_Z.png"
                 screenshot_file_loop = base_name + "-len_" + str(len_no) + "_looprem.png"
                 export_file_wloops = base_name + "-len_" + str(len_no) + ".xls"
                 export_file_loops_removed = base_name + "-len_" + str(len_no) + "_loops_removed.xls"
             else:
-                screenshot_file_xy = base_name + "-len_" + str(len_no) + "_XY.png"
-                screenshot_file_z = base_name + "-len_" + str(len_no) + "_Z.png"
-                screenshot_file_loop = base_name + "-len_" + str(len_no) + "_looprem.png"
-                export_file_wloops = base_name + "-len_" + str(len_no) + ".xls"
-                export_file_loops_removed = base_name + "-len_" + str(len_no) + "_loops_removed.xls"
+                screenshot_file_xy = base_name + "_XY.png"
+                screenshot_file_z = base_name + "_Z.png"
+                screenshot_file_loop = base_name + "_looprem.png"
+                export_file_wloops = base_name + ".xls"
+                export_file_loops_removed = base_name + "_loops_removed.xls"
             if not os.path.exists(os.path.join(export_dir_out, export_file_loops_removed)):
                 if input_file not in problem_list:
                     try:
@@ -231,7 +249,7 @@ for root, dirs, files in os.walk(input_path):
                             WinFiberExport(os.path.join(export_dir_out, export_file_loops_removed))
                         else:
                             time.sleep(10)
-                            logging.info('    File not processed', input_file)
+                            logging.info('    File not processed: %s', input_file)
                             problem_list.append(input_file)
                             time.sleep(3)
                             p.kill()
