@@ -1,7 +1,7 @@
-# Script toolbox for 3D image processing
+# acvq - a toolbox for semi-automated 3D quantification of vascular-like structures in z-stack confocal images
 
-This toolbox provides scripts to automate the steps outlines in the manuscript '3D quantification of vascular-like structures in z-stack confocal images' submitted to starProtocols.
-This protocol utilizes [Fiji](https://imagej.net/Fiji) [[1]](#1), [Amira, ThermoFisher](https://www.fei-software-center.com/forms/amira-trial/) [[2]](#2) and [WinFiber3D](https://mrl.sci.utah.edu/software/winfiber3d/ ) to skeletonize and reconstruct vascular structures in z-stack confocal images.
+This toolbox is comprised of scripts to automate the steps outlined in the manuscript '3D quantification of vascular-like structures in z-stack confocal images' which will be submitted shortly.
+This protocol utilises [Fiji](https://imagej.net/Fiji) [[1]](#1), [Amira, ThermoFisher](https://www.fei-software-center.com/forms/amira-trial/) [[2]](#2) and [WinFiber3D](https://mrl.sci.utah.edu/software/winfiber3d/ ) to skeletonize and reconstruct vascular structures in z-stack confocal images.
 Eventually, morphometrical parameters, such as vessel number, length, diameter as well as branching are determined.
 
 Following the protocol, the scripts are to be used in the following order:
@@ -123,6 +123,9 @@ The WinFiber data is exported to a `*.xls` file, one file per input image.
 Moreover, screenshots of the WinFiber window will be saved.
 For further information on the output of WinFiber3D, refer to the WinFiber3D manual.
 
+`WinFiber.py` can be started as is (`python WinFiber.py`) and the script will ask to provide the paths to `WinFiber.exe`, the input and output folders.
+Alternatively, use `python WinFiber.py Path/to/WinFiber.exe Path/to/mv3D_files Path/to/output_folder`.
+
 ### WinFiberGatherOutput.py
 
 This script gathers the information of various `*.xls` files into one csv file.
@@ -144,12 +147,18 @@ Th following information is collected from the Winfiber3D export:
 
 Additionally, the number of segments is collected and the overall average diameter is calculated using the average diameter of each segment.
 
+`WinFiberGatherOutput.py` can be started as is (`python WinFiberGatherOutput.py`) and the script will ask to provide the paths the input and output folders.
+Alternatively, use `python WinFiberGatherOutput.py Path/to/xls_files Path/to/output_folder`.
+
 ### WinFiberGatherSegmentData.py
 
 In addition to the data of the vessels, WinFiber3D provides data of the segments.
 This script reads out the angles (Pr(x), x, and z) as well as length and diameter information for each segment.
 The output is written in 5 different files.
 For further information on the angles calculated by WinFiber3D, refer to the WinFiber3D manual.
+
+`WinFiberGatherSegmentData.py` can be started as is (`python WinFiberGatherSegmentData.py`) and the script will ask to provide the paths the input and output folders.
+Alternatively, use `python WinFiberGatherSegmentData.py Path/to/xls_files Path/to/output_folder`.
 
 # References
 
