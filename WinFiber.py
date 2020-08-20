@@ -162,7 +162,12 @@ except IndexError:
     input_path = input('Please provide the path to the mv3d files. ')
     input_path = input_path.replace('"', '')
     input_path = Path(input_path)
-ask_dir(input_path, 'Please provide the path to the mv3d files. ')
+if not os.path.isdir(input_path):
+    while True:
+        input_path = input(
+            "This dir doesn't seem to exist. Please check your input. ")
+        input_path = input_path.replace('"', '')
+        input_path = Path(input_path)
 
 try:
     output_path = Path(sys.argv[3])
