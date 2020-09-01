@@ -25,25 +25,25 @@ Please refer to the [Python website](https://www.python.org/about/gettingstarted
 ## Short protocol
 
 1. Use the `ToTiff.py` to convert image files from a proprietary file format to tiff files and read out the voxel size. By default, use the following options:
-  * Output: New directory, no subfolders
-  * Overwrite: user's choice
-  * Save channels in different subfolders: yes
-  * Maximum intensity projections: yes (tiff or jpg)
-1. Deconvolute the images with `Deconvolution.hx`
-  * either use `mkconfig.py` to create the config file and run Amira
-  * or create the config file manually, change the path in `Deconvolution.hx` and run
-1. Use the `binarize.py` script to binarize the image in Fiji. Following options:
-  * Output: New directory, no subfolders
-  * Overwrite: user's choice
-  * Threshold: each slice or stack histogram, depending on the image. In doubt, try both. See also Troubleshooting.
-  * Maximum intensity projections: yes (tiff or jpg)
-1. Skeletonize and save `*.mv3d` files with `Skeletonization.hx`
+    * Output: New directory, no subfolders
+    * Overwrite: user's choice
+    * Save channels in different subfolders: yes
+    * Maximum intensity projections: yes (tiff or jpg)
+2. Deconvolute the images with `Deconvolution.hx`
     * either use `mkconfig.py` to create the config file and run Amira
-    * or create the config file manually
-1. WinFiber.py
-    * adapt the pyautogui position parameters
-1. WinFiberGatherOutput.py*
-1. WinFiberGatherSegmentData.py
+    * or create the config file manually, change the path in `Deconvolution.hx` and run
+3. Use the `binarize.py` script to binarize the image in Fiji. Following options:
+    * Output: New directory, no subfolders
+    * Overwrite: user's choice
+    * Threshold: each slice or stack histogram, depending on the image. In doubt, try both. See also Troubleshooting.
+    * Maximum intensity projections: yes (tiff or jpg)
+4. Skeletonize and save `*.mv3d` files with `Skeletonization.hx`
+      * either use `mkconfig.py` to create the config file and run Amira
+      * or create the config file manually
+5. WinFiber.py
+      * adapt the pyautogui position parameters
+6. WinFiberGatherOutput.py*
+7. WinFiberGatherSegmentData.py
 
 
 
