@@ -40,10 +40,10 @@ Please refer to the [Python website](https://www.python.org/about/gettingstarted
 4. Skeletonize and save `*.mv3d` files with `Skeletonization.hx`
       * either use `mkconfig.py` to create the config file and run Amira
       * or create the config file manually
-5. WinFiber.py
+5. WinFiber.py*
       * adapt the pyautogui position parameters
 6. WinFiberGatherOutput.py*
-7. WinFiberGatherSegmentData.py
+7. WinFiberGatherSegmentData.py*
 
 
 
