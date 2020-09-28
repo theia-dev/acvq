@@ -331,7 +331,7 @@ else:
 conf_dir = input("Please provide the directory to store config file. ")
 conf_dir = conf_dir.replace('"', '')
 if not conf_dir.endswith(".tcl"):
-    conf_dir = os.path.join(conf_dir, conf_name + ".tcl")
+    conf_dir = os.path.join(conf_dir, conf_name)
 
 with open(str(conf_dir), 'w') as out:
     out.write(conf)
