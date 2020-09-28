@@ -277,21 +277,26 @@ def skeleton_config(template):
         'Please provide a string for the output filename. Can be empty, then the filenames will be the same as the input. ')
     if MV3DOutID == '':
         MV3DOutID = '""'
-    chamferInterpret = ask_choice('Please set chamfer interpretation', [
+
+    islandsize = input('Please provide the size of "islands" in µm^3. ')
+    check_float(islandsize)
+
+    chamferInterpret = ask_choice('Chamfer Distance Map. Please set chamfer interpretation', [
         ['3D', 0],
         ['XY planes', 1],
     ])
+
+    len_list = input('Thinner. Len of ends. Enter a value. If you would like to try multiple, separate by space. ')
+    len_list = len_list.replace(",", " ")
+    len_list = len_list.replace(";", " ")
+
     smooth_coeff = input('Smooth Lines. Set the value for the coefficient. ')
     check_float(smooth_coeff)
     smooth_adhere = input('Smooth Lines. Set the value for adhere to original data. ')
     check_float(smooth_adhere)
     smooth_iter = input('Smooth Lines. How many iterations? ')
     check_float(smooth_iter)
-    len_list = input('Len of ends. Enter a value. If you would like to try multiple, separate by space. ')
-    len_list = len_list.replace(",", " ")
-    len_list = len_list.replace(";", " ")
-    islandsize = input('Please provide the size of "islands" in µm^3. ')
-    check_float(islandsize)
+
     saveProj = ask_choice('Would you like to save the Amira project?', [
         ['no', 'n'],
         ['yes', 'y'],
@@ -326,7 +331,7 @@ else:
 conf_dir = input("Please provide the directory to store config file. ")
 conf_dir = conf_dir.replace('"', '')
 if not conf_dir.endswith(".tcl"):
-    conf_dir = os.path.join(conf_dir, "deconv_config.tcl")
+    conf_dir = os.path.join(conf_dir, conf_name + ".tcl")
 
 with open(str(conf_dir), 'w') as out:
     out.write(conf)
