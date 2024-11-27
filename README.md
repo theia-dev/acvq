@@ -1,7 +1,7 @@
 # acvq - a toolbox for semi-automated 3D quantification of vascular-like structures in z-stack confocal images
 
-This toolbox is comprised of scripts to automate the steps outlined in the manuscript '3D quantification of vascular-like structures in z-stack confocal images' which will be submitted shortly.
-This protocol utilises [Fiji](https://imagej.net/Fiji) [[1]](#1), [Amira, ThermoFisher](https://www.fei-software-center.com/forms/amira-trial/) [[2]](#2) and [WinFiber3D](https://mrl.sci.utah.edu/software/winfiber3d/ ) to skeletonize and reconstruct vascular structures in z-stack confocal images.
+This toolbox is comprised of scripts to automate the steps outlined in the manuscript '3D quantification of vascular-like structures in z-stack confocal images'[[1]](#1).
+This protocol utilises [Fiji](https://imagej.net/Fiji) [[2]](#2), [Amira, ThermoFisher](https://www.fei-software-center.com/forms/amira-trial/) [[3]](#3) and [WinFiber3D](https://mrl.sci.utah.edu/software/winfiber3d/ ) to skeletonize and reconstruct vascular structures in z-stack confocal images.
 Eventually, morphometrical parameters, such as vessel number, length, diameter as well as branching are determined.
 
 Following the protocol, the scripts are to be used in the following order:
@@ -161,14 +161,19 @@ For further information on the angles calculated by WinFiber3D, refer to the Win
 Alternatively, use `python WinFiberGatherSegmentData.py Path/to/xls_files Path/to/output_folder`.
 
 # References
-
 <a id="1">[1]</a>
+> Bonda, Ulrich, Jaeschke, Anna, Lighterness, Anthony, Baldwin, Jeremy, Werner, Carsten, De-Juan-Pardo, Elena M, and Bray, Laura J
+> "3D Quantification of Vascular-Like Structures in z Stack Confocal Images.”
+> *STAR Protocols* **1**, 13 (2020)
+> doi: [10.1016/j.xpro.2020.100180](https://doi.org/10.1016/j.xpro.2020.100180)
+
+<a id="2">[2]</a>
 > Schindelin, Johannes, Ignacio Arganda-Carreras, Erwin Frise, Verena Kaynig, Mark Longair, Tobias Pietzsch, Stephan Preibisch, et al.
 > “Fiji: An Open-Source Platform for Biological-Image Analysis.”
 > *Nature Methods* **9**, 7 (2012)
 > doi: [10.1038/nmeth.2019](https://doi.org/10.1038/nmeth.2019)
 
-<a id="2">[2]</a>
+<a id="3">[3]</a>
 > Stalling, Detlev, Malte Westerhoff, and Hans-Christian Hege.
 > “Amira: A Highly Interactive System for Visual Data Analysis.”
 > In *Visualization Handbook*, **749–67**. Elsevier, 2005
